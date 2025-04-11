@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node", // Debug type
+            "request": "launch", // Request type launch or attach
+            "name": "Start Debug",
+            "runtimeExecutable": "pnpm", // Runtime app to use
+            "runtimeArgs": ["dev"], // Args to use
+            "console": "integratedTerminal",
+            "restart": true,
+            "autoAttachChildProcesses": true,
+            "outFiles": ["${workspaceFolder}/**/*.js", "!**/node_modules/**"]
+        }
+    ]
+}

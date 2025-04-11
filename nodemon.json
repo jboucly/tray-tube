@@ -1,0 +1,16 @@
+{
+    "$schema": "https://json.schemastore.org/nodemon-2.0.0.json",
+    "watch": ["src/**/*.ts"],
+    "ext": "ts",
+    "exec": "tsc && electron .",
+    "ignore": ["src/**/*.spec.ts", "src/**/*.test.ts"],
+    "env": {
+        "NODE_ENV": "development"
+    },
+    "restartable": "rs",
+    "events": {
+        "restart": "echo 'Restarting...'",
+        "crash": "echo 'Crashed...'",
+        "exit": "echo 'Exiting...'"
+    }
+}
