@@ -15,6 +15,8 @@ export class YtDownloadService {
 
             if (isAudio) {
                 args = [
+                    '--ffmpeg-location',
+                    this.binaries.ffmpegPath,
                     '-x', // Extract only audio
                     '--audio-format',
                     audioFormat,
