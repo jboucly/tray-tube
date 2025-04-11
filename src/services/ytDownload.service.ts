@@ -1,10 +1,11 @@
 import { spawn } from 'child_process';
+import { promises } from 'fs';
 import { FileAudio, FileFormat, FileFormatAudio, FileFormatVideo, FileVideo } from '../common/types/fileFormat.type';
-import { GetBinary } from '../utils/getBinary.utils';
+import { GetBinaries } from '../utils/getBinary.utils';
 import { Logger } from '../utils/logger.utils';
 
 export class YtDownloadService {
-    private ytDlpBinary = GetBinary();
+    private binaries = GetBinaries();
 
     public async downloadVideo(urlVideo: string, format: FileFormat, outputFolder: string): Promise<void> {
         try {
@@ -23,6 +24,8 @@ export class YtDownloadService {
                 ];
             } else if (isVideo) {
                 args = [
+                    '--ffmpeg-location',
+                    this.binaries.ffmpegPath,
                     '-f',
                     'bv*+ba/best', // Best video + best audio
                     '--merge-output-format',
@@ -40,8 +43,23 @@ export class YtDownloadService {
     }
 
     private async runDownloadProcess(args: string[]): Promise<void> {
+        await this.checkBinaryExists();
+
         await new Promise<void>((resolve, reject) => {
-            const ytDlp = spawn(this.ytDlpBinary, args);
+            Logger.info('🚀 [yt-dlp] Run download with args :', this.binaries, args);
+            const ytDlp = spawn(this.binaries.ytDlpPath, args);
+
+            ytDlp.on('spawn', () => {
+                Logger.info('🚀 [yt-dlp] Process spawned');
+            });
+
+            ytDlp.on('message', (msg) => {
+                Logger.info('🚀 [yt-dlp] Message from process :', msg);
+            });
+
+            ytDlp.on('disconnect', () => {
+                Logger.info('🚀 [yt-dlp] Process disconnected');
+            });
 
             ytDlp.on('error', (err) => {
                 Logger.error('❌ Error when spawn yt-dlp :', err);
@@ -79,5 +97,17 @@ export class YtDownloadService {
             format: format as FileFormatVideo,
             isVideo: FileVideo.includes(format as FileFormatVideo)
         };
+    }
+
+    private async checkBinaryExists(): Promise<void> {
+        const isFileExist = await promises
+            .access(this.binaries.ytDlpPath)
+            .then(() => true)
+            .catch(() => false);
+
+        if (!isFileExist) {
+            Logger.error('❌ yt-dlp binary not found at', this.binaries);
+            return;
+        }
     }
 }

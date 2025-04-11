@@ -36,7 +36,7 @@ export class TrayModel {
             alwaysOnTop: true,
             skipTaskbar: true,
             webPreferences: {
-                preload: join(__dirname, 'preload.js'),
+                preload: join(__dirname, '../preload.js'),
                 nodeIntegration: true,
                 contextIsolation: false
             }

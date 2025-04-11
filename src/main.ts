@@ -1,4 +1,5 @@
 import { app, ipcMain } from 'electron';
+import log from 'electron-log/main';
 import { AppController } from './controllers/app.controller';
 import { IpcMainController } from './controllers/ipcMain.controller';
 import { Logger } from './utils/logger.utils';
@@ -6,6 +7,8 @@ import { Logger } from './utils/logger.utils';
 async function main() {
     try {
         await app.whenReady();
+        log.initialize();
+
         const appController = new AppController();
         const ipcMainController = new IpcMainController(ipcMain);
 

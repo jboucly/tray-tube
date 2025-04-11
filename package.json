@@ -15,6 +15,7 @@
     },
     "dependencies": {
         "chalk": "^5.4.1",
+        "electron-log": "^5.3.3",
         "tsconfig-paths": "^4.2.0"
     },
     "devDependencies": {
@@ -32,7 +33,6 @@
         "productName": "TrayTube",
         "files": [
             "dist/**/*",
-            "yt-dlp/**/*",
             "src/**/*",
             "assets/**/*",
             "!**/node_modules/*/{test,__mocks__}/**"
