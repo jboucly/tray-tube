@@ -1,17 +1,23 @@
-import { ipcRenderer } from 'electron';
+import { contextBridge, ipcRenderer } from 'electron';
+import { AppMessageToVue } from './enums/AppMessageToVue.enum';
+import { VueMessageToApp } from './enums/vueMessageToApp.enum';
+import { Logger } from './utils/logger.utils';
 
-function logToMain(...args: any[]) {
-    ipcRenderer.send('log-from-renderer', args.map(String).join(' '));
-}
+Logger.info('✅ Preload script loaded');
 
 console.log = (...args) => {
-    logToMain(...args);
+    Logger.info('[Renderer]', ...args);
 };
 
 console.error = (...args) => {
-    logToMain(...args);
+    Logger.error('[Renderer]', ...args);
 };
 
-console.warn = (...args) => {
-    logToMain(...args);
-};
+contextBridge.exposeInMainWorld('electronAPI', {
+    sendToMain: (channel: string, data: any) => {
+        ipcRenderer.send(channel, data);
+    },
+    onFromElectron: (callback: (data: { type: VueMessageToApp; data: any }) => void) => {
+        ipcRenderer.on(AppMessageToVue.MSG_VUE, (_event, data) => callback(data));
+    }
+});

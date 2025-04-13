@@ -7,6 +7,7 @@
     "description": "Youtube tray app using yt-dlp",
     "scripts": {
         "dev": "nodemon",
+        "start:dev": "rimraf dist && pnpm build:main && pnpm cpAssets && electron .",
         "build:main": "tsc",
         "start:vue": "vite",
         "build:vue": "vite build",

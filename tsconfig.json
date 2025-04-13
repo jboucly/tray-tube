@@ -5,8 +5,9 @@
         "moduleResolution": "node",
         "strict": true,
         "jsx": "preserve",
-        "resolveJsonModule": true,
+        "sourceMap": true,
         "esModuleInterop": true,
+        "resolveJsonModule": true,
         "allowSyntheticDefaultImports": true,
         "outDir": "dist",
         "baseUrl": ".",
@@ -15,5 +16,5 @@
         },
         "types": ["node", "electron"]
     },
-    "include": ["src", "types/vue.d.ts"]
+    "include": ["src/**/*", "src/types/**/*.d.ts"]
 }

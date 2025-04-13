@@ -13,7 +13,6 @@ async function main() {
         const ipcMainController = new IpcMainController(ipcMain);
 
         await appController.init();
-        await ipcMainController.init();
         await ipcMainController.setTrayIpcEvent(appController.tray);
 
         console.info('🚀 Yt-Tray app is running');

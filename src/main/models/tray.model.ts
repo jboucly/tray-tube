@@ -8,8 +8,6 @@ export class TrayModel {
     private tray: Tray | null = null;
 
     public initTray(): void {
-        console.log(__dirname);
-
         this.tray = new Tray(join(__dirname, '../../assets/logo-32x32.png'));
 
         const contextMenu = Menu.buildFromTemplate([
@@ -40,7 +38,7 @@ export class TrayModel {
             webPreferences: {
                 preload: join(__dirname, '../preload.js'),
                 nodeIntegration: true,
-                contextIsolation: false
+                contextIsolation: true
             }
         });
 

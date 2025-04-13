@@ -1,6 +1,10 @@
 import { spawn } from 'child_process';
+import { BrowserWindow } from 'electron';
 import { promises } from 'fs';
+import * as readline from 'readline';
 import { FileAudio, FileFormat, FileFormatAudio, FileFormatVideo, FileVideo } from '../../common/types/fileFormat.type';
+import { AppMessageToVue } from '../enums/AppMessageToVue.enum';
+import { VueMessageToApp } from '../enums/vueMessageToApp.enum';
 import { GetBinaries } from '../utils/getBinary.utils';
 import { Logger } from '../utils/logger.utils';
 
@@ -46,6 +50,7 @@ export class YtDownloadService {
 
     private async runDownloadProcess(args: string[]): Promise<void> {
         await this.checkBinaryExists();
+        const focusedWindow = BrowserWindow.getFocusedWindow();
 
         await new Promise<void>((resolve, reject) => {
             Logger.info('🚀 [yt-dlp] Run download with args :', this.binaries, args);
@@ -55,21 +60,17 @@ export class YtDownloadService {
                 Logger.info('🚀 [yt-dlp] Process spawned');
             });
 
-            ytDlp.on('message', (msg) => {
-                Logger.info('🚀 [yt-dlp] Message from process :', msg);
-            });
-
-            ytDlp.on('disconnect', () => {
-                Logger.info('🚀 [yt-dlp] Process disconnected');
-            });
-
             ytDlp.on('error', (err) => {
                 Logger.error('❌ Error when spawn yt-dlp :', err);
                 reject(err);
             });
 
-            ytDlp.stdout.on('data', (data) => {
+            ytDlp.stdout.on('data', (data: string) => {
                 Logger.info(`🚀 [yt-dlp] stdout : ${data}`);
+            });
+
+            readline.createInterface({ input: ytDlp.stdout }).on('line', (line) => {
+                this.sendProgressToRenderer(line, focusedWindow);
             });
 
             ytDlp.stderr.on('data', (data) => {
@@ -78,7 +79,7 @@ export class YtDownloadService {
 
             ytDlp.on('close', (code) => {
                 if (code === 0) {
-                    Logger.info('✅ yt-dlp finished successfully');
+                    Logger.info('✅ [yt-dlp] finished successfully');
                     resolve();
                 } else {
                     reject(new Error(`yt-dlp terminated with error code : ${code}`));
@@ -110,6 +111,19 @@ export class YtDownloadService {
         if (!isFileExist) {
             Logger.error('❌ yt-dlp binary not found at', this.binaries);
             return;
+        }
+    }
+
+    private sendProgressToRenderer(data: string, focusedWindow: BrowserWindow | null): void {
+        const match = data.match(/\[download\]\s+(\d{1,3}\.\d+)%/);
+
+        if (focusedWindow && match) {
+            const progress = parseFloat(match[1]);
+
+            focusedWindow.webContents.send(AppMessageToVue.MSG_VUE, {
+                type: VueMessageToApp.DOWNLOAD_PROGRESS,
+                data: progress
+            });
         }
     }
 }
