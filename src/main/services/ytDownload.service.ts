@@ -1,6 +1,6 @@
 import { spawn } from 'child_process';
 import { promises } from 'fs';
-import { FileAudio, FileFormat, FileFormatAudio, FileFormatVideo, FileVideo } from '../common/types/fileFormat.type';
+import { FileAudio, FileFormat, FileFormatAudio, FileFormatVideo, FileVideo } from '../../common/types/fileFormat.type';
 import { GetBinaries } from '../utils/getBinary.utils';
 import { Logger } from '../utils/logger.utils';
 

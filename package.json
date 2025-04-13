@@ -3,30 +3,39 @@
     "version": "1.0.0",
     "license": "ISC",
     "author": "Jboucly",
-    "main": "dist/main.js",
+    "main": "dist/main/main.js",
     "description": "Youtube tray app using yt-dlp",
     "scripts": {
-        "build": "rimraf dist && tsc",
         "dev": "nodemon",
-        "start": "tsc && electron .",
-        "prettier": "prettier --write .",
+        "build:main": "tsc",
+        "start:vue": "vite",
+        "build:vue": "vite build",
+        "start": "pnpm build && electron .",
+        "build": "rimraf dist && pnpm build:vue && pnpm build:main && pnpm cpAssets",
+        "dist": "electron-builder",
         "pack": "electron-builder --dir",
-        "dist": "electron-builder"
+        "cpAssets": "cp -R assets dist/assets",
+        "prettier": "prettier --write ."
     },
     "dependencies": {
         "chalk": "^5.4.1",
         "electron-log": "^5.3.3",
-        "tsconfig-paths": "^4.2.0"
+        "tsconfig-paths": "^4.2.0",
+        "vue": "^3.5.13"
     },
     "devDependencies": {
-        "@types/node": "^20.4.3",
+        "@types/node": "^22.14.1",
+        "@vitejs/plugin-vue": "^5.2.1",
+        "@vue/tsconfig": "^0.7.0",
         "electron": "^35.1.5",
         "electron-builder": "^26.0.12",
         "nodemon": "^3.1.9",
         "prettier": "^3.5.3",
         "rimraf": "^6.0.1",
         "ts-node": "^10.9.2",
-        "typescript": "^5.2.2"
+        "typescript": "~5.7.2",
+        "vite": "^6.2.0",
+        "vue-tsc": "^2.2.4"
     },
     "build": {
         "appId": "com.exemple.yttray",
@@ -48,15 +57,15 @@
         ],
         "mac": {
             "target": "dmg",
-            "icon": "src/assets/icon.png"
+            "icon": "assets/icon.png"
         },
         "win": {
             "target": "nsis",
-            "icon": "src/assets/icon.png"
+            "icon": "assets/icon.png"
         },
         "linux": {
             "target": "AppImage",
-            "icon": "src/assets"
+            "icon": "assets"
         }
     }
 }
