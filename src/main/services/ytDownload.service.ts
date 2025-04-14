@@ -81,8 +81,7 @@ export class YtDownloadService {
                 if (code === 0) {
                     Logger.info('✅ [yt-dlp] finished successfully');
                     focusedWindow?.webContents.send(AppMessageToVue.MSG_VUE, {
-                        type: VueMessageToApp.DOWNLOAD_PROGRESS,
-                        data: 100
+                        type: VueMessageToApp.DOWNLOAD_PROGRESS_END
                     });
                     resolve();
                 } else {

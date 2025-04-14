@@ -17,11 +17,10 @@ onMounted(() => {
         switch (event.type) {
             case 'download-progress':
                 percentage.value = event.data;
-
-                if (percentage.value === 100) {
-                    message.success('Téléchargement terminé !');
-                    percentage.value = 0;
-                }
+                break;
+            case 'download-progress-end':
+                percentage.value = 0;
+                message.success('Téléchargement terminé !');
                 break;
             case 'selected-folder':
                 selectedFolder.value = event.data;
@@ -46,7 +45,7 @@ const chooseFolder = () => {
 };
 
 const download = () => {
-    if (!url.value && url.value.includes('https://')) {
+    if (!url.value || !url.value.includes('https://')) {
         message.warning('Veuillez entrer une URL valide.');
         return;
     }
@@ -67,24 +66,88 @@ const download = () => {
 </script>
 
 <template>
-    <div style="padding: 20px; background-color: #1e1e1e; color: white; min-height: 100vh">
-        <h3 style="text-align: center; margin-top: 0">Téléchargeur YouTube</h3>
+    <div class="container">
+        <div class="card">
+            <h2 class="title">Téléchargeur YouTube</h2>
 
-        <n-input v-model:value="url" placeholder="Coller une URL YouTube ici..." style="margin-bottom: 10px" />
-        <n-select v-model:value="format" :options="formatOptions" style="margin-bottom: 10px" />
-        <n-button type="error" block @click="chooseFolder" style="margin-bottom: 5px">
-            Choisir un dossier de sortie
-        </n-button>
-        <p>Dossier de sortie : {{ selectedFolder || 'Aucun sélectionné' }}</p>
+            <n-input v-model:value="url" placeholder="Coller une URL YouTube ici..." class="input" size="large" />
 
-        <n-progress
-            v-if="percentage"
-            type="line"
-            status="success"
-            :percentage="percentage"
-            indicator-placement="inside"
-        />
+            <n-select v-model:value="format" :options="formatOptions" class="input" size="large" />
 
-        <n-button type="error" block :disabled="percentage !== 0" @click="download">Télécharger</n-button>
+            <n-button type="error" block size="large" @click="chooseFolder" class="input">
+                Choisir un dossier de sortie
+            </n-button>
+
+            <p class="folder-info">
+                Dossier de sortie : <span class="folder">{{ selectedFolder || 'Aucun sélectionné' }}</span>
+            </p>
+
+            <n-progress
+                v-if="percentage"
+                type="line"
+                status="success"
+                :percentage="percentage"
+                indicator-placement="inside"
+                class="input"
+            />
+
+            <n-button
+                type="error"
+                block
+                size="large"
+                :disabled="percentage !== 0"
+                @click="download"
+                class="download-btn"
+            >
+                Télécharger
+            </n-button>
+        </div>
     </div>
 </template>
+
+<style scoped>
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    color: #ffffff;
+}
+
+.card {
+    max-width: 500px;
+    width: 100%;
+    padding: 30px;
+    border-radius: 12px;
+    /* background-color: #1e1e1e; */
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.title {
+    text-align: center;
+    margin-bottom: 24px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #ff0000; /* YouTube Red */
+}
+
+.input {
+    margin-bottom: 16px;
+}
+
+.folder-info {
+    font-size: 14px;
+    margin-bottom: 12px;
+    color: #aaa;
+}
+
+.folder {
+    /* color: #fff; */
+    font-weight: bold;
+}
+
+.download-btn {
+    margin-top: 12px;
+}
+</style>
