@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { NButton, NInput, NProgress, NSelect, useMessage } from 'naive-ui';
 import { onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { FileAudio, FileVideo } from '../../common/types/fileFormat.type';
 
+const { t } = useI18n();
 const message = useMessage();
 
 const url = ref('');
@@ -12,15 +14,13 @@ const selectedFolder = ref('');
 
 onMounted(() => {
     window.electronAPI.onFromElectron((event) => {
-        console.log('Message reçu depuis Electron :', event);
-
         switch (event.type) {
             case 'download-progress':
                 percentage.value = event.data;
                 break;
             case 'download-progress-end':
                 percentage.value = 0;
-                message.success('Téléchargement terminé !');
+                message.success(t('home.download_complete'));
                 break;
             case 'selected-folder':
                 selectedFolder.value = event.data;
@@ -46,12 +46,12 @@ const chooseFolder = () => {
 
 const download = () => {
     if (!url.value || !url.value.includes('https://')) {
-        message.warning('Veuillez entrer une URL valide.');
+        message.warning(t('home.invalid_url'));
         return;
     }
 
     if (!selectedFolder.value) {
-        message.warning('Veuillez choisir un dossier de sortie.');
+        message.warning(t('home.no_folder_warning'));
         return;
     }
 
@@ -68,38 +68,38 @@ const download = () => {
 <template>
     <div class="container">
         <div class="card">
-            <h2 class="title">Téléchargeur YouTube</h2>
+            <h2 class="title">{{ t('home.title') }}</h2>
 
-            <n-input v-model:value="url" placeholder="Coller une URL YouTube ici..." class="input" size="large" />
+            <n-input v-model:value="url" :placeholder="t('home.placeholder')" class="input" size="large" />
 
             <n-select v-model:value="format" :options="formatOptions" class="input" size="large" />
 
             <n-button type="error" block size="large" @click="chooseFolder" class="input">
-                Choisir un dossier de sortie
+                {{ t('home.choose_folder') }}
             </n-button>
 
             <p class="folder-info">
-                Dossier de sortie : <span class="folder">{{ selectedFolder || 'Aucun sélectionné' }}</span>
+                {{ t('home.folder_prefix') }} <span class="folder">{{ selectedFolder || t('home.no_folder') }}</span>
             </p>
 
             <n-progress
                 v-if="percentage"
                 type="line"
+                class="input"
                 status="success"
                 :percentage="percentage"
                 indicator-placement="inside"
-                class="input"
             />
 
             <n-button
                 type="error"
                 block
                 size="large"
+                class="download-btn"
                 :disabled="percentage !== 0"
                 @click="download"
-                class="download-btn"
             >
-                Télécharger
+                {{ t('home.download') }}
             </n-button>
         </div>
     </div>
@@ -110,7 +110,7 @@ const download = () => {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    min-height: 80vh;
     padding: 20px;
     color: #ffffff;
 }

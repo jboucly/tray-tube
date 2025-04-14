@@ -30,6 +30,8 @@ export class TrayModel {
         }
 
         this.win = new BrowserWindow({
+            width: 800,
+            height: 600,
             frame: true,
             closable: true,
             resizable: true,
