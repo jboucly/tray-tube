@@ -4,6 +4,7 @@ import Layout from './components/Layout.vue';
 </script>
 
 <template>
+    <title>TrayTube</title>
     <n-message-provider>
         <Layout>
             <router-view />

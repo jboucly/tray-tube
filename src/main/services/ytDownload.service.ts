@@ -80,6 +80,10 @@ export class YtDownloadService {
             ytDlp.on('close', (code) => {
                 if (code === 0) {
                     Logger.info('✅ [yt-dlp] finished successfully');
+                    focusedWindow?.webContents.send(AppMessageToVue.MSG_VUE, {
+                        type: VueMessageToApp.DOWNLOAD_PROGRESS,
+                        data: 100
+                    });
                     resolve();
                 } else {
                     reject(new Error(`yt-dlp terminated with error code : ${code}`));
