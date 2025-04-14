@@ -47,7 +47,7 @@ export class TrayModel {
         if (!app.isPackaged) {
             this.win.loadURL('http://localhost:5173');
         } else {
-            this.win.loadFile(join(__dirname, 'ui/index.html'));
+            this.win.loadFile(join(__dirname, '..', '..', 'ui/index.html'));
         }
 
         this.win.on('closed', () => {

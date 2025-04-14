@@ -5,15 +5,10 @@ import { defineConfig } from 'vite';
 // https://vite.dev/config/
 export default defineConfig({
     base: './',
+    root: 'src/ui',
     plugins: [vue()],
     build: {
         emptyOutDir: true,
-        lib: {
-            name: 'ui',
-            fileName: 'ui',
-            formats: ['es'],
-            entry: resolve(__dirname, 'src/ui/main.ts')
-        },
         assetsDir: 'src/ui/assets',
         outDir: resolve(__dirname, 'dist/ui')
     },
