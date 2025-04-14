@@ -1,4 +1,4 @@
-import { BrowserWindow, Menu, Tray } from 'electron';
+import { app, BrowserWindow, Menu, Tray } from 'electron';
 import { join } from 'path';
 import { Logger } from '../utils/logger.utils';
 
@@ -8,7 +8,7 @@ export class TrayModel {
     private tray: Tray | null = null;
 
     public initTray(): void {
-        this.tray = new Tray(join(__dirname, '../../src/assets/logo-32x32.png'));
+        this.tray = new Tray(join(__dirname, '../../assets/logo-32x32.png'));
 
         const contextMenu = Menu.buildFromTemplate([
             {
@@ -30,6 +30,8 @@ export class TrayModel {
         }
 
         this.win = new BrowserWindow({
+            width: 800,
+            height: 600,
             frame: true,
             closable: true,
             resizable: true,
@@ -38,11 +40,15 @@ export class TrayModel {
             webPreferences: {
                 preload: join(__dirname, '../preload.js'),
                 nodeIntegration: true,
-                contextIsolation: false
+                contextIsolation: true
             }
         });
 
-        this.win.loadFile(join(__dirname, '../../src/ui/index.html'));
+        if (!app.isPackaged) {
+            this.win.loadURL('http://localhost:5173');
+        } else {
+            this.win.loadFile(join(__dirname, '..', '..', 'ui/index.html'));
+        }
 
         this.win.on('closed', () => {
             this.win = null;

@@ -8,8 +8,8 @@ export const GetBinaries = (): { ytDlpPath: string; ffmpegPath: string } => {
     let ffmpegPath = '';
     const isDev = !app.isPackaged;
 
-    ytDlpPath = isDev ? join(__dirname, '../../binaries') : join(process.resourcesPath, 'binaries');
-    ffmpegPath = isDev ? join(__dirname, '../../binaries') : join(process.resourcesPath, 'binaries');
+    ytDlpPath = isDev ? join(__dirname, '../../../binaries') : join(process.resourcesPath, 'binaries');
+    ffmpegPath = isDev ? join(__dirname, '../../../binaries') : join(process.resourcesPath, 'binaries');
 
     if (platform() === 'win32') {
         ytDlpPath = join(ytDlpPath, 'yt-dlp.exe');
