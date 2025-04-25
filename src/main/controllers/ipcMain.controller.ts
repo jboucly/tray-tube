@@ -1,4 +1,5 @@
 import { app, dialog } from 'electron';
+import i18next from 'i18next';
 import { AppMessageToVue } from '../enums/AppMessageToVue.enum';
 import { VueMessageToApp } from '../enums/vueMessageToApp.enum';
 import { TrayModel } from '../models/tray.model';
@@ -16,10 +17,14 @@ export class IpcMainController {
 
     public async setTrayIpcEvent(trayModel: TrayModel): Promise<void> {
         this.ipcMain.on(VueMessageToApp.CHOOSE_FOLDER, async (event) => {
-            const result = await dialog.showOpenDialog({
+            if (trayModel.win === null) throw new Error('Window is null');
+
+            const result = await dialog.showOpenDialog(trayModel.win, {
                 properties: ['openDirectory'],
                 defaultPath: app.getPath('desktop'),
-                title: 'Select a folder to save the file'
+                title: i18next.t('electron.select_folder_dialog.title'),
+                message: i18next.t('electron.select_folder_dialog.message'),
+                buttonLabel: i18next.t('electron.select_folder_dialog.button_label')
             });
 
             if (result.canceled || !result.filePaths[0]) return;
@@ -30,7 +35,7 @@ export class IpcMainController {
             });
         });
 
-        this.ipcMain.on('download-video', async (event, { urlVideo, format, outputFolder }) => {
+        this.ipcMain.on(VueMessageToApp.DOWNLOAD_VIDEO, async (event, { urlVideo, format, outputFolder }) => {
             Logger.info('Download video', urlVideo, format, outputFolder);
             await this.ytDownloaderService.downloadVideo(urlVideo, format, outputFolder);
         });

@@ -1,6 +1,7 @@
 import { spawn } from 'child_process';
-import { BrowserWindow } from 'electron';
+import { BrowserWindow, Notification } from 'electron';
 import { promises } from 'fs';
+import i18next from 'i18next';
 import * as readline from 'readline';
 import { FileAudio, FileFormat, FileFormatAudio, FileFormatVideo, FileVideo } from '../../common/types/fileFormat.type';
 import { AppMessageToVue } from '../enums/AppMessageToVue.enum';
@@ -83,6 +84,13 @@ export class YtDownloadService {
                     focusedWindow?.webContents.send(AppMessageToVue.MSG_VUE, {
                         type: VueMessageToApp.DOWNLOAD_PROGRESS_END
                     });
+
+                    new Notification({
+                        silent: false,
+                        title: i18next.t('electron.notifications.download_complete.title'),
+                        body: i18next.t('electron.notifications.download_complete.body')
+                    }).show();
+
                     resolve();
                 } else {
                     reject(new Error(`yt-dlp terminated with error code : ${code}`));

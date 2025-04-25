@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import { useTranslation } from 'i18next-vue';
 import { NButton, NInput, NProgress, NSelect, useMessage } from 'naive-ui';
 import { onMounted, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { FileAudio, FileVideo } from '../../common/types/fileFormat.type';
 
-const { t } = useI18n();
+const { t } = useTranslation();
 const message = useMessage();
 
 const url = ref('');
@@ -20,7 +20,7 @@ onMounted(() => {
                 break;
             case 'download-progress-end':
                 percentage.value = 0;
-                message.success(t('home.download_complete'));
+                message.success(t('app.home.download_complete'));
                 break;
             case 'selected-folder':
                 selectedFolder.value = event.data;
@@ -46,12 +46,12 @@ const chooseFolder = () => {
 
 const download = () => {
     if (!url.value || !url.value.includes('https://')) {
-        message.warning(t('home.invalid_url'));
+        message.warning(t('app.home.invalid_url'));
         return;
     }
 
     if (!selectedFolder.value) {
-        message.warning(t('home.no_folder_warning'));
+        message.warning(t('app.home.no_folder_warning'));
         return;
     }
 
@@ -68,18 +68,19 @@ const download = () => {
 <template>
     <div class="container">
         <div class="card">
-            <h2 class="title">{{ t('home.title') }}</h2>
+            <h2 class="title">{{ t('app.home.title') }}</h2>
 
-            <n-input v-model:value="url" :placeholder="t('home.placeholder')" class="input" size="large" />
+            <n-input v-model:value="url" :placeholder="t('app.home.placeholder')" class="input" size="large" />
 
             <n-select v-model:value="format" :options="formatOptions" class="input" size="large" />
 
             <n-button type="error" block size="large" @click="chooseFolder" class="input">
-                {{ t('home.choose_folder') }}
+                {{ t('app.home.choose_folder') }}
             </n-button>
 
             <p class="folder-info">
-                {{ t('home.folder_prefix') }} <span class="folder">{{ selectedFolder || t('home.no_folder') }}</span>
+                {{ t('app.home.folder_prefix') }}
+                <span class="folder">{{ selectedFolder || t('app.home.no_folder') }}</span>
             </p>
 
             <n-progress
@@ -99,7 +100,7 @@ const download = () => {
                 :disabled="percentage !== 0"
                 @click="download"
             >
-                {{ t('home.download') }}
+                {{ t('app.home.download') }}
             </n-button>
         </div>
     </div>

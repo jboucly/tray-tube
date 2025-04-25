@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import { useTranslation } from 'i18next-vue';
 import { NSelect } from 'naive-ui';
 import { ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
-const { locale } = useI18n();
-const selectedLocale = ref(locale.value);
+const { i18next } = useTranslation();
+const selectedLocale = ref(i18next.language);
 
 const options = [
     { label: '🇫🇷 Français', value: 'fr' },
@@ -12,7 +12,8 @@ const options = [
 ];
 
 watch(selectedLocale, (newLocale) => {
-    locale.value = newLocale;
+    i18next.changeLanguage(newLocale);
+    window.electronAPI.sendToMain('change-language', newLocale);
     localStorage.setItem('locale', newLocale);
 });
 </script>
