@@ -1,7 +1,8 @@
 import { spawn } from 'child_process';
-import { BrowserWindow, Notification } from 'electron';
+import { BrowserWindow, nativeImage, Notification } from 'electron';
 import { promises } from 'fs';
 import i18next from 'i18next';
+import { join } from 'path';
 import * as readline from 'readline';
 import { FileAudio, FileFormat, FileFormatAudio, FileFormatVideo, FileVideo } from '../../common/types/fileFormat.type';
 import { AppMessageToVue } from '../enums/AppMessageToVue.enum';
@@ -87,8 +88,9 @@ export class YtDownloadService {
 
                     new Notification({
                         silent: false,
+                        body: i18next.t('electron.notifications.download_complete.body'),
                         title: i18next.t('electron.notifications.download_complete.title'),
-                        body: i18next.t('electron.notifications.download_complete.body')
+                        icon: nativeImage.createFromPath(join(__dirname, '../../assets/icons/downloaded.png'))
                     }).show();
 
                     resolve();
