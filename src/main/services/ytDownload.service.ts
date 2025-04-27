@@ -2,7 +2,7 @@ import { spawn } from 'child_process';
 import { BrowserWindow, nativeImage, shell } from 'electron';
 import { promises } from 'fs';
 import i18next from 'i18next';
-import { join } from 'path';
+import { join, normalize } from 'path';
 import * as readline from 'readline';
 import { FileAudio, FileFormat, FileFormatAudio, FileFormatVideo, FileVideo } from '../../common/types/fileFormat.type';
 import { AppMessageToVue } from '../enums/AppMessageToVue.enum';
@@ -88,7 +88,7 @@ export class YtDownloadService {
                     });
 
                     sendNotification({
-                        onClick: () => shell.openPath(outputFolder.replace(/\\/g, '/')),
+                        onClick: () => shell.openPath(normalize(outputFolder)),
                         body: i18next.t('electron.notifications.download_complete.body'),
                         title: i18next.t('electron.notifications.download_complete.title'),
                         icon: nativeImage.createFromPath(join(__dirname, '../../assets/icons/downloaded.png'))
