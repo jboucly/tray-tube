@@ -1,5 +1,5 @@
 import { spawn } from 'child_process';
-import { BrowserWindow, nativeImage, Notification } from 'electron';
+import { BrowserWindow, nativeImage, shell } from 'electron';
 import { promises } from 'fs';
 import i18next from 'i18next';
 import { join } from 'path';
@@ -9,6 +9,7 @@ import { AppMessageToVue } from '../enums/AppMessageToVue.enum';
 import { VueMessageToApp } from '../enums/vueMessageToApp.enum';
 import { GetBinaries } from '../utils/getBinary.utils';
 import { Logger } from '../utils/logger.utils';
+import { sendNotification } from '../utils/notification.utils';
 
 export class YtDownloadService {
     private binaries = GetBinaries();
@@ -44,13 +45,13 @@ export class YtDownloadService {
                 ];
             } else throw new Error('Invalid format type');
 
-            await this.runDownloadProcess(args);
+            await this.runDownloadProcess(args, outputFolder);
         } catch (err) {
             console.error('❌ [YtDownloadService] Error :', err);
         }
     }
 
-    private async runDownloadProcess(args: string[]): Promise<void> {
+    private async runDownloadProcess(args: string[], outputFolder: string): Promise<void> {
         await this.checkBinaryExists();
         const focusedWindow = BrowserWindow.getFocusedWindow();
 
@@ -86,12 +87,12 @@ export class YtDownloadService {
                         type: VueMessageToApp.DOWNLOAD_PROGRESS_END
                     });
 
-                    new Notification({
-                        silent: false,
+                    sendNotification({
+                        onClick: () => shell.openPath(outputFolder.replace(/\\/g, '/')),
                         body: i18next.t('electron.notifications.download_complete.body'),
                         title: i18next.t('electron.notifications.download_complete.title'),
                         icon: nativeImage.createFromPath(join(__dirname, '../../assets/icons/downloaded.png'))
-                    }).show();
+                    });
 
                     resolve();
                 } else {
