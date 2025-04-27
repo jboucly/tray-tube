@@ -13,6 +13,8 @@ jobs:
         strategy:
             matrix:
                 os: [macos-latest, windows-latest]
+        env:
+            GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
         steps:
             - uses: actions/checkout@v4
@@ -53,6 +55,9 @@ jobs:
     release:
         needs: build
         runs-on: ubuntu-latest
+
+        env:
+            GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
         steps:
             - name: Download all artifacts
