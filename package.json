@@ -54,7 +54,6 @@
     "build": {
         "appId": "com.exemple.yttray",
         "productName": "TrayTube",
-        "artifactName": "TrayTube-${version}-${os}.dmg",
         "files": [
             "dist/**/*",
             "src/**/*",
