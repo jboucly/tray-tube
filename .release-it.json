@@ -10,7 +10,7 @@
         "publish": false
     },
     "hooks": {
-        "before:git:release": "pnpm prettier"
+        "before:git:release": "pnpm prettier && git add ."
     },
     "git": {
         "requireBranch": "main",
