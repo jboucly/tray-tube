@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useTranslation } from 'i18next-vue';
 import { NButton, NInput, NProgress, NSelect, useMessage } from 'naive-ui';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { FileAudio, FileVideo } from '../../common/types/fileFormat.type';
 
 const { t } = useTranslation();
@@ -63,6 +63,13 @@ const download = () => {
         outputFolder: selectedFolder.value
     });
 };
+
+watch(percentage, (newValue) => {
+    if (newValue === 0) {
+        url.value = '';
+        format.value = 'wav';
+    }
+});
 </script>
 
 <template>
@@ -70,9 +77,21 @@ const download = () => {
         <div class="card">
             <h2 class="title">{{ t('app.home.title') }}</h2>
 
-            <n-input v-model:value="url" :placeholder="t('app.home.placeholder')" class="input" size="large" />
+            <n-input
+                v-model:value="url"
+                :disabled="percentage > 0"
+                :placeholder="t('app.home.placeholder')"
+                class="input"
+                size="large"
+            />
 
-            <n-select v-model:value="format" :options="formatOptions" class="input" size="large" />
+            <n-select
+                v-model:value="format"
+                :disabled="percentage > 0"
+                :options="formatOptions"
+                class="input"
+                size="large"
+            />
 
             <n-button type="error" block size="large" @click="chooseFolder" class="input">
                 {{ t('app.home.choose_folder') }}
