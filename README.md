@@ -19,6 +19,7 @@
     <img src="https://img.shields.io/badge/-vue-4CD964?style=for-the-badge&labelColor=17202A&logo=vue.js&logoColor=61DBFB" alt="Vue" />
     <img src="https://img.shields.io/badge/-node-8CC84B?style=for-the-badge&labelColor=17202A&logo=node.js&logoColor=339933" alt="Node" />
     <img src="https://img.shields.io/badge/pnpm-20232A?style=for-the-badge&logo=pnpm&logoColor=f6922" alt="Pnpm" />
+    <img src="https://github.com/jboucly/tray-tube/actions/workflows/quality.yml/badge.svg" alt="ci" />
 </div>
 
 <div align="center">

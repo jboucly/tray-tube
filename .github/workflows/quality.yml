@@ -1,0 +1,40 @@
+name: Install and Quality Checks
+
+on:
+    push:
+    pull_request:
+        branches: [main]
+
+jobs:
+    quality:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: '20'
+
+            - uses: pnpm/action-setup@v3
+              with:
+                  version: '9'
+
+            - name: Cache pnpm store
+              uses: actions/cache@v4
+              with:
+                  path: ~/.pnpm-store
+                  key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+                  restore-keys: |
+                      ${{ runner.os }}-pnpm-
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Build check
+              run: pnpm run build
+
+            - name: Lint check
+              run: pnpm run prettier:check
+
+            - name: Security audit
+              run: pnpm audit --prod
