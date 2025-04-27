@@ -4,7 +4,9 @@ export enum VueMessageToApp {
     DOWNLOAD_PROGRESS_END = 'download-progress-end',
 
     CHOOSE_FOLDER = 'choose-folder',
-    SELECTED_FOLDER = 'selected-folder'
+    SELECTED_FOLDER = 'selected-folder',
+
+    CHANGE_LANGUAGE = 'change-language'
 }
 
 export type VueMessageTypeValue = `${VueMessageToApp}`;

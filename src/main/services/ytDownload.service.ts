@@ -1,12 +1,15 @@
 import { spawn } from 'child_process';
-import { BrowserWindow } from 'electron';
+import { BrowserWindow, nativeImage, shell } from 'electron';
 import { promises } from 'fs';
+import i18next from 'i18next';
+import { join, normalize } from 'path';
 import * as readline from 'readline';
 import { FileAudio, FileFormat, FileFormatAudio, FileFormatVideo, FileVideo } from '../../common/types/fileFormat.type';
 import { AppMessageToVue } from '../enums/AppMessageToVue.enum';
 import { VueMessageToApp } from '../enums/vueMessageToApp.enum';
 import { GetBinaries } from '../utils/getBinary.utils';
 import { Logger } from '../utils/logger.utils';
+import { sendNotification } from '../utils/notification.utils';
 
 export class YtDownloadService {
     private binaries = GetBinaries();
@@ -42,13 +45,13 @@ export class YtDownloadService {
                 ];
             } else throw new Error('Invalid format type');
 
-            await this.runDownloadProcess(args);
+            await this.runDownloadProcess(args, outputFolder);
         } catch (err) {
             console.error('❌ [YtDownloadService] Error :', err);
         }
     }
 
-    private async runDownloadProcess(args: string[]): Promise<void> {
+    private async runDownloadProcess(args: string[], outputFolder: string): Promise<void> {
         await this.checkBinaryExists();
         const focusedWindow = BrowserWindow.getFocusedWindow();
 
@@ -83,6 +86,14 @@ export class YtDownloadService {
                     focusedWindow?.webContents.send(AppMessageToVue.MSG_VUE, {
                         type: VueMessageToApp.DOWNLOAD_PROGRESS_END
                     });
+
+                    sendNotification({
+                        onClick: () => shell.openPath(normalize(outputFolder)),
+                        body: i18next.t('electron.notifications.download_complete.body'),
+                        title: i18next.t('electron.notifications.download_complete.title'),
+                        icon: nativeImage.createFromPath(join(__dirname, '../../assets/icons/downloaded.png'))
+                    });
+
                     resolve();
                 } else {
                     reject(new Error(`yt-dlp terminated with error code : ${code}`));
