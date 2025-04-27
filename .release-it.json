@@ -1,8 +1,8 @@
 {
     "plugins": {
         "@release-it/conventional-changelog": {
-            "infile": "CHANGELOG.md",
             "preset": "angular",
+            "infile": "CHANGELOG.md",
             "ignoreRecommendedBump": true
         }
     },
@@ -14,10 +14,11 @@
     },
     "git": {
         "requireBranch": "main",
-        "requireCleanWorkingDir": false,
         "requireCommits": true,
-        "commitMessage": "chore: bump version to ${version}",
+        "tagName": "v${version}",
+        "requireCleanWorkingDir": false,
         "commitArgs": ["--no-verify"],
-        "pushArgs": ["--follow-tags", "--no-verify"]
+        "pushArgs": ["--follow-tags", "--no-verify"],
+        "commitMessage": "chore: bump version to ${version}"
     }
 }
