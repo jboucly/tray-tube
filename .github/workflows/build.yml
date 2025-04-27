@@ -46,11 +46,14 @@ jobs:
                   GH_TOKEN: ${{ secrets.GH_TOKEN }}
               run: pnpm run dist
 
+            - name: Copy artifacts to artifacts folder
+              run: pnpm run cpExecutables
+
             - name: Upload Installers
               uses: actions/upload-artifact@v4
               with:
                   name: electron-installers-${{ matrix.os }}
-                  path: dist/*.{dmg,exe}
+                  path: dist/executables
 
     release:
         needs: build
