@@ -41,7 +41,7 @@ jobs:
 
             - name: Build Electron App
               env:
-                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  GH_TOKEN: ${{ secrets.GH_TOKEN }}
               run: pnpm run dist
 
             - name: Upload Installers
