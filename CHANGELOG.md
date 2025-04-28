@@ -1,5 +1,11 @@
 # Changelog
 
+# [1.1.0](https://github.com/jboucly/tray-tube/compare/v1.0.0...v1.1.0) (2025-04-28)
+
+### Features
+
+- compatibility for window ([#10](https://github.com/jboucly/tray-tube/issues/10)) ([dae1928](https://github.com/jboucly/tray-tube/commit/dae19283a5df7c44e56d9366a89d68864a1b1452))
+
 # 1.0.0 (2025-04-28)
 
 ### Bug Fixes
