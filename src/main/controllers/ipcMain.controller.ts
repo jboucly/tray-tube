@@ -7,8 +7,8 @@ import { YtDownloadService } from '../services/ytDownload.service';
 import { Logger } from '../utils/logger.utils';
 
 export class IpcMainController {
-    private ipcMain: Electron.IpcMain;
-    private ytDownloaderService: YtDownloadService;
+    private readonly ipcMain: Electron.IpcMain;
+    private readonly ytDownloaderService: YtDownloadService;
 
     constructor(ipcMain: Electron.IpcMain) {
         this.ipcMain = ipcMain;

@@ -12,11 +12,11 @@ export class TrayModel {
 
         const contextMenu = Menu.buildFromTemplate([
             {
-                label: 'Open Yt-Tray',
+                label: 'Open TrayTube',
                 click: () => this.createPopupWindow()
             },
             { type: 'separator' },
-            { role: 'quit' }
+            { role: 'quit', label: 'Exit' }
         ]);
 
         this.tray.setToolTip('Downloader for Youtube');
@@ -25,6 +25,7 @@ export class TrayModel {
 
     public createPopupWindow(): void {
         if (this.win) {
+            this.win.show();
             this.win.focus();
             return;
         }
@@ -44,11 +45,18 @@ export class TrayModel {
             }
         });
 
+        this.win.removeMenu();
+
         if (!app.isPackaged) {
             this.win.loadURL('http://localhost:5173');
         } else {
             this.win.loadFile(join(__dirname, '..', '..', 'ui/index.html'));
         }
+
+        this.win.on('close', (event) => {
+            event.preventDefault();
+            this.win?.hide();
+        });
 
         this.win.on('closed', () => {
             this.win = null;
