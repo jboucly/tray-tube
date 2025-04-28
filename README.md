@@ -91,6 +91,28 @@ And run the vue app in dev mode
 $ pnpm start:vue
 ```
 
+## How to install the app on your system
+
+This app is not signed (❌💰), so you need to bypass the security of your system to run it.
+
+### Windows
+
+TODO:
+
+### MacOS
+
+1. Download the last version app from the [releases](https://github.com/jboucly/tray-tube/releases)
+2. Run the installer
+3. Slide the app in your applications folder
+
+If you run the app now, a error message will appear saying `TrayTupe is damaged and can't be opened. You should move it to the Trash.` to bypass this error for always, you need to open terminal and run the following command :
+
+```bash
+$ xattr -c /Applications/TrayTube.app
+```
+
+4. Now you can run the app by clicking on the icon in your applications folder
+
 ---
 
 ## 📄 Licence
