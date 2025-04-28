@@ -13,7 +13,7 @@
         "build:vue": "vite build",
         "start": "pnpm build && electron .",
         "build": "rimraf dist && pnpm build:vue && pnpm build:main && pnpm cpAssets",
-        "dist": "electron-builder",
+        "dist": "electron-builder --publish never",
         "pack": "electron-builder --dir",
         "cpAssets": "cp -R assets dist/assets",
         "cpExecutables": "ts-node ./scripts/copyBinaries.ts",
