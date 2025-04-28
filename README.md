@@ -63,9 +63,11 @@ $ git clone https://github.com/jboucly/yt-tray-app.git
 
 ```bash
 $ pnpm install
+$ chmod +x ./binaries/mac/yt-dlp
+$ chmod +x ./binaries/mac/ffmpeg
 ```
 
-3. Build the app
+1. Build the app
 
 ```bash
 $ pnpm build

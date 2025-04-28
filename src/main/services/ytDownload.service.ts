@@ -10,9 +10,10 @@ import { VueMessageToApp } from '../enums/vueMessageToApp.enum';
 import { GetBinaries } from '../utils/getBinary.utils';
 import { Logger } from '../utils/logger.utils';
 import { sendNotification } from '../utils/notification.utils';
+import { sanitizePath } from '../utils/path.utils';
 
 export class YtDownloadService {
-    private binaries = GetBinaries();
+    private readonly binaries = GetBinaries();
 
     public async downloadVideo(urlVideo: string, format: FileFormat, outputFolder: string): Promise<void> {
         try {
@@ -28,7 +29,7 @@ export class YtDownloadService {
                     '--audio-format',
                     audioFormat,
                     '-o',
-                    `${outputFolder}/%(title)s.%(ext)s`,
+                    sanitizePath(join(outputFolder, '%(title)s.%(ext)s')),
                     urlVideo
                 ];
             } else if (isVideo) {
@@ -40,7 +41,7 @@ export class YtDownloadService {
                     '--merge-output-format',
                     videoFormat,
                     '-o',
-                    `${outputFolder}/%(title)s.%(ext)s`,
+                    sanitizePath(join(outputFolder, '%(title)s.%(ext)s')),
                     urlVideo
                 ];
             } else throw new Error('Invalid format type');

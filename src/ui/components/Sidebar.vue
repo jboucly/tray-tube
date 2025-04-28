@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { HomeOutline, SettingsOutline } from '@vicons/ionicons5';
+import { HomeOutline } from '@vicons/ionicons5';
 import { NIcon, NMenu } from 'naive-ui';
 import { MenuMixedOption } from 'naive-ui/es/menu/src/interface';
 import { Component, h, ref, watch } from 'vue';
@@ -15,12 +15,12 @@ const menuOptions: MenuMixedOption[] = [
         key: '/',
         label: 'Home',
         icon: renderIcon(HomeOutline)
-    },
-    {
-        key: '/settings',
-        label: 'Settings',
-        icon: renderIcon(SettingsOutline)
     }
+    // {
+    //     key: '/settings',
+    //     label: 'Settings',
+    //     icon: renderIcon(SettingsOutline)
+    // }
 ];
 
 function renderIcon(icon: Component) {
