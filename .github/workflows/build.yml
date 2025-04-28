@@ -38,7 +38,7 @@ jobs:
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
 
-            - name: Build Electron App
+            - name: Build App
               run: pnpm build
 
             - name: Build Electron App

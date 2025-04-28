@@ -71,6 +71,8 @@
         ],
         "mac": {
             "target": "dmg",
+            "identity": null,
+            "hardenedRuntime": false,
             "icon": "assets/logo.png"
         },
         "win": {
