@@ -63,6 +63,7 @@ $ git clone https://github.com/jboucly/yt-tray-app.git
 
 ```bash
 $ pnpm install
+$ chmod +x ./binaries/mac/yt-dlp
 ```
 
 3. Build the app
