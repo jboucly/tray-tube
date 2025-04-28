@@ -49,11 +49,17 @@ jobs:
             - name: Copy artifacts to artifacts folder
               run: pnpm run cpExecutables
 
+            - name: Compress Installers
+              run: |
+                  mkdir -p compressed
+                  cd dist/executables
+                  zip -r ../../compressed/installers-${{ matrix.os }}.zip .
+
             - name: Upload Installers
               uses: actions/upload-artifact@v4
               with:
                   name: electron-installers-${{ matrix.os }}
-                  path: dist/executables
+                  path: compressed/
 
     release:
         needs: build
