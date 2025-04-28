@@ -16,7 +16,7 @@ export class TrayModel {
                 click: () => this.createPopupWindow()
             },
             { type: 'separator' },
-            { role: 'quit', label: 'Exit' }
+            { label: 'Exit', click: () => app.exit(0) }
         ]);
 
         this.tray.setToolTip('Downloader for Youtube');
