@@ -49,11 +49,16 @@ jobs:
             - name: Copy artifacts to artifacts folder
               run: pnpm run cpExecutables
 
-            - name: Compress Installers
-              run: |
-                  mkdir -p compressed
-                  cd dist/executables
-                  zip -r ../../compressed/installers-${{ matrix.os }}.zip .
+            - name: Create compressed folder
+              run: mkdir compressed
+
+            - name: Compress artifacts (Windows)
+              if: matrix.os == 'windows-latest'
+              run: Compress-Archive -Path dist/executables/* -DestinationPath compressed/installers-${{ matrix.os }}.zip
+
+            - name: Compress artifacts (Mac)
+              if: matrix.os == 'macos-latest'
+              run: zip -r compressed/installers-${{ matrix.os }}.zip dist/executables/
 
             - name: Upload Installers
               uses: actions/upload-artifact@v4
