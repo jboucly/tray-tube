@@ -25,6 +25,10 @@ export default {
                 title: 'Download complete',
                 body: 'Your video has been downloaded successfully !'
             }
+        },
+        tray: {
+            show: 'Show TrayTube',
+            exit: 'Exit'
         }
     }
 } as ResourceKey;

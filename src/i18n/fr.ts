@@ -25,6 +25,10 @@ export default {
                 title: 'Téléchargement terminé',
                 body: 'Votre vidéo a été téléchargée avec succès !'
             }
+        },
+        tray: {
+            show: 'Ouvrir TrayTube',
+            exit: 'Quitter'
         }
     }
 } as ResourceKey;
