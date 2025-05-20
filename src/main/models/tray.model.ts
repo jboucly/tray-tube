@@ -1,4 +1,5 @@
 import { app, BrowserWindow, Menu, Tray } from 'electron';
+import i18next from 'i18next';
 import { join } from 'path';
 import { Logger } from '../utils/logger.utils';
 
@@ -12,15 +13,21 @@ export class TrayModel {
 
         const contextMenu = Menu.buildFromTemplate([
             {
-                label: 'Open TrayTube',
+                label: i18next.t('electron.tray.show'),
                 click: () => this.createPopupWindow()
             },
             { type: 'separator' },
-            { label: 'Exit', click: () => app.exit(0) }
+            { label: i18next.t('electron.tray.exit'), click: () => app.exit(0) }
         ]);
 
         this.tray.setToolTip('Downloader for Youtube');
         this.tray.setContextMenu(contextMenu);
+    }
+
+    public destroyTray(): void {
+        if (this.tray) {
+            this.tray.destroy();
+        }
     }
 
     public createPopupWindow(): void {

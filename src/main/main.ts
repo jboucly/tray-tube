@@ -1,7 +1,9 @@
 import { app, ipcMain } from 'electron';
 import log from 'electron-log/main';
 import i18next from 'i18next';
-import { initI18next } from '../i18n';
+import { initI18nextSync } from '../i18n/initSync';
+import { DefaultValueInDb } from '../stores/constants/defaultValueInDb.constant';
+import { Store } from '../stores/store.client';
 import { AppController } from './controllers/app.controller';
 import { IpcMainController } from './controllers/ipcMain.controller';
 import { VueMessageToApp } from './enums/vueMessageToApp.enum';
@@ -11,8 +13,10 @@ async function main() {
     try {
         await app.whenReady();
 
+        await Store.init(DefaultValueInDb);
+
         log.initialize();
-        initI18next('en');
+        await initI18nextSync();
 
         const appController = new AppController();
         const ipcMainController = new IpcMainController(ipcMain);
@@ -25,6 +29,10 @@ async function main() {
         ipcMain.on(VueMessageToApp.CHANGE_LANGUAGE, async (_event, lng) => {
             Logger.info('Change language to', lng);
             await i18next.changeLanguage(lng);
+            await Store.set('language', lng);
+
+            appController.tray.destroyTray();
+            appController.tray.initTray();
         });
 
         app.on('will-quit', () => {

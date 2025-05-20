@@ -19,5 +19,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
     },
     onFromElectron: (callback: (data: { type: VueMessageToApp; data: any }) => void) => {
         ipcRenderer.on(AppMessageToVue.MSG_VUE, (_event, data) => callback(data));
-    }
+    },
+    getStoreValue: async (key: string) => await ipcRenderer.invoke(VueMessageToApp.GET_STORE, key)
 });

@@ -5,6 +5,7 @@ declare global {
         electronAPI: {
             sendToMain: (channel: VueMessageTypeValue, data?: any) => void;
             onFromElectron: (callback: (data: { type: VueMessageTypeValue; data: any }) => void) => void;
+            getStoreValue: <T>(key: string) => Promise<T>;
         };
     }
 }
