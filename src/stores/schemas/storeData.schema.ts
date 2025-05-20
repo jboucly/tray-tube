@@ -1,10 +1,12 @@
 import { FromSchema } from 'json-schema-to-ts';
 import { LanguageJsonSchema } from './language.schema';
+import { YtDownloadHistorySchema } from './ytDownloadHistory.schema';
 
 export const StoreDataSchema = {
     type: 'object',
     properties: {
-        language: LanguageJsonSchema
+        language: LanguageJsonSchema,
+        ytDownloadHistory: YtDownloadHistorySchema
     },
     required: ['language'],
     additionalProperties: false

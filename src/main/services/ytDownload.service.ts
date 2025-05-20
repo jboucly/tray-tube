@@ -5,6 +5,8 @@ import i18next from 'i18next';
 import { join, normalize } from 'path';
 import * as readline from 'readline';
 import { FileAudio, FileFormat, FileFormatAudio, FileFormatVideo, FileVideo } from '../../common/types/fileFormat.type';
+import { YtDownloadHistoryProperty } from '../../stores/schemas/ytDownloadHistory.schema';
+import { Store } from '../../stores/store.client';
 import { AppMessageToVue } from '../enums/AppMessageToVue.enum';
 import { VueMessageToApp } from '../enums/vueMessageToApp.enum';
 import { GetBinaries } from '../utils/getBinary.utils';
@@ -46,7 +48,10 @@ export class YtDownloadService {
                 ];
             } else throw new Error('Invalid format type');
 
+            const metadata = await this.getVideoMetadata(urlVideo);
             await this.runDownloadProcess(args, outputFolder);
+
+            await Store.insert<YtDownloadHistoryProperty>('ytDownloadHistory', metadata);
         } catch (err) {
             console.error('❌ [YtDownloadService] Error :', err);
         }
@@ -67,10 +72,6 @@ export class YtDownloadService {
             ytDlp.on('error', (err) => {
                 Logger.error('❌ Error when spawn yt-dlp :', err);
                 reject(err);
-            });
-
-            ytDlp.stdout.on('data', (data: string) => {
-                Logger.info(`🚀 [yt-dlp] stdout : ${data}`);
             });
 
             readline.createInterface({ input: ytDlp.stdout }).on('line', (line) => {
@@ -99,6 +100,43 @@ export class YtDownloadService {
                 } else {
                     reject(new Error(`yt-dlp terminated with error code : ${code}`));
                 }
+            });
+        });
+    }
+
+    /**
+     * @description Get video metadata using yt-dlp, this is used to get all information about the video
+     */
+    private async getVideoMetadata(urlVideo: string): Promise<YtDownloadHistoryProperty> {
+        return new Promise((resolve, reject) => {
+            let output = '';
+            const ytDlp = spawn(this.binaries.ytDlpPath, ['-j', urlVideo]);
+
+            ytDlp.stdout.on('data', (data) => {
+                output += data.toString();
+            });
+
+            ytDlp.on('close', () => {
+                try {
+                    const json = JSON.parse(output);
+                    const metadata: YtDownloadHistoryProperty = {
+                        id: json.id,
+                        title: json.title,
+                        url: json.webpage_url,
+                        thumbnail: json.thumbnail,
+                        createdAt: new Date().toISOString()
+                    };
+
+                    Logger.info('🚀 [yt-dlp] Metadata :', metadata);
+                    resolve(metadata);
+                } catch (e) {
+                    reject(e);
+                }
+            });
+
+            ytDlp.on('error', (err) => {
+                Logger.error('❌ Error when spawn for metadata yt-dlp :', err);
+                reject(err);
             });
         });
     }

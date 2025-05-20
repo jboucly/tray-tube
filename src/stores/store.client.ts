@@ -47,6 +47,19 @@ class StoreDb<T> {
         this.db.data = newData;
         await this.db.write();
     }
+
+    public async insert<Type, K extends keyof T = keyof T>(key: K, value: Type): Promise<void> {
+        await this.db.read();
+        const currentArray = Array.isArray(this.db.data?.[key]) ? (this.db.data?.[key] as unknown[]) : [];
+        const newData = { ...this.db.data, [key]: [...currentArray, value] } as T;
+
+        if (!this.validate(newData)) {
+            throw new Error('Invalid data for store');
+        }
+
+        this.db.data = newData;
+        await this.db.write();
+    }
 }
 
 export const Store = new StoreDb<StoreData>(StoreDataSchema);
