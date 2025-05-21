@@ -22,7 +22,8 @@ export default {
             delete_all: 'Delete all',
             confirm_delete_all: 'Are you sure you want to delete all ?',
             confirm_button_label: 'Delete',
-            cancel_button_label: 'Cancel'
+            cancel_button_label: 'Cancel',
+            see_all: 'See all'
         }
     },
     electron: {

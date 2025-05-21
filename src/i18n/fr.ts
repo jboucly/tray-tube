@@ -20,7 +20,8 @@ export default {
             delete_all: 'Tout supprimer',
             confirm_delete_all: 'Êtes-vous sûr de vouloir tout supprimer ?',
             confirm_button_label: 'Supprimer',
-            cancel_button_label: 'Annuler'
+            cancel_button_label: 'Annuler',
+            see_all: 'Voir tout'
         }
     },
     electron: {
