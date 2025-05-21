@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { renderIcon } from '@/utils/renderIcon.utils';
 import { FileTrayFullOutline, HomeOutline } from '@vicons/ionicons5';
+import { useTranslation } from 'i18next-vue';
 import { NMenu } from 'naive-ui';
 import { MenuMixedOption } from 'naive-ui/es/menu/src/interface';
 import { ref, watch } from 'vue';
@@ -8,18 +9,19 @@ import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute();
 const router = useRouter();
+const { t, i18next } = useTranslation();
 
 const selectedKey = ref(route.path);
 
 const menuOptions: MenuMixedOption[] = [
     {
         key: '/',
-        label: 'Home',
+        label: () => t('app.sidebar.home'),
         icon: renderIcon(HomeOutline)
     },
     {
         key: '/download-history',
-        label: 'Download History',
+        label: () => t('app.sidebar.download_history'),
         icon: renderIcon(FileTrayFullOutline)
     }
     // {

@@ -3,6 +3,10 @@ export default {
         modal: {
             warning: 'Attention'
         },
+        sidebar: {
+            home: 'Accueil',
+            download_history: 'Historique'
+        },
         home: {
             title: 'Téléchargeur YouTube',
             placeholder: 'Coller une URL YouTube ici...',

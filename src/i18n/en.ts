@@ -5,6 +5,10 @@ export default {
         modal: {
             warning: 'Warning'
         },
+        sidebar: {
+            home: 'Home',
+            download_history: 'Download History'
+        },
         home: {
             title: 'YouTube Downloader',
             placeholder: 'Paste a YouTube URL here...',

@@ -6,7 +6,7 @@ import { onMounted, ref } from 'vue';
 import { YtDownloadHistory } from '../../stores/schemas/ytDownloadHistory.schema';
 
 const dialog = useDialog();
-const { t } = useTranslation();
+const { t, i18next } = useTranslation();
 const histories = ref([] as YtDownloadHistory);
 
 defineProps({
@@ -75,7 +75,7 @@ const confirmDeleteAll = () => {
                     <div style="margin-left: 16px">
                         <div style="font-weight: bold">{{ history.title }}</div>
                         <n-tag type="info" size="small" style="margin-top: 4px">
-                            {{ format(history.createdAt, 'dd/MM/yyyy') }}
+                            {{ format(history.createdAt, i18next.language === 'en' ? 'yyyy/MM/dd' : 'dd/MM/yyyy') }}
                         </n-tag>
                     </div>
                 </div>
