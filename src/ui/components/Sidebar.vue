@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import { renderIcon } from '@/utils/renderIcon.utils';
 import { HomeOutline } from '@vicons/ionicons5';
-import { NIcon, NMenu } from 'naive-ui';
+import { NMenu } from 'naive-ui';
 import { MenuMixedOption } from 'naive-ui/es/menu/src/interface';
-import { Component, h, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute();
@@ -22,10 +23,6 @@ const menuOptions: MenuMixedOption[] = [
     //     icon: renderIcon(SettingsOutline)
     // }
 ];
-
-function renderIcon(icon: Component) {
-    return () => h(NIcon, null, { default: () => h(icon) });
-}
 
 const handleSelect = (key: string) => {
     selectedKey.value = key;

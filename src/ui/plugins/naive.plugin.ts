@@ -2,13 +2,21 @@ import {
     create,
     NButton,
     NConfigProvider,
+    NDialog,
+    NEmpty,
     NIcon,
     NLayout,
     NLayoutContent,
     NLayoutFooter,
     NLayoutHeader,
     NLayoutSider,
-    NMenu
+    NList,
+    NListItem,
+    NMenu,
+    NModal,
+    NSpace,
+    NTag,
+    NThing
 } from 'naive-ui';
 
 export const naive = create({
@@ -21,6 +29,14 @@ export const naive = create({
         NMenu,
         NIcon,
         NConfigProvider,
-        NLayoutFooter
+        NLayoutFooter,
+        NList,
+        NListItem,
+        NTag,
+        NSpace,
+        NThing,
+        NEmpty,
+        NModal,
+        NDialog
     ]
 });

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import DownloadHistory from '@/components/DownloadHistory.vue';
 import { useTranslation } from 'i18next-vue';
 import { NButton, NInput, NProgress, NSelect, useMessage } from 'naive-ui';
 import { onMounted, ref, watch } from 'vue';
@@ -122,6 +123,10 @@ watch(percentage, (newValue) => {
                 {{ t('app.home.download') }}
             </n-button>
         </div>
+    </div>
+
+    <div>
+        <DownloadHistory />
     </div>
 </template>
 

@@ -1,7 +1,8 @@
-import { ResourceKey } from 'i18next';
-
 export default {
     app: {
+        modal: {
+            warning: 'Attention'
+        },
         home: {
             title: 'Téléchargeur YouTube',
             placeholder: 'Coller une URL YouTube ici...',
@@ -12,6 +13,14 @@ export default {
             download_complete: 'Téléchargement terminé !',
             invalid_url: 'Veuillez entrer une URL valide.',
             no_folder_warning: 'Veuillez choisir un dossier de sortie.'
+        },
+        downloadHistory: {
+            title: 'Historique des téléchargements',
+            empty: 'Aucun téléchargement effectué.',
+            delete_all: 'Tout supprimer',
+            confirm_delete_all: 'Êtes-vous sûr de vouloir tout supprimer ?',
+            confirm_button_label: 'Supprimer',
+            cancel_button_label: 'Annuler'
         }
     },
     electron: {
@@ -31,4 +40,6 @@ export default {
             exit: 'Quitter'
         }
     }
-} as ResourceKey;
+};
+
+export type FrTranslation = typeof import('./fr').default;

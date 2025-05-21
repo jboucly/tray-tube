@@ -2,6 +2,9 @@ import { ResourceKey } from 'i18next';
 
 export default {
     app: {
+        modal: {
+            warning: 'Warning'
+        },
         home: {
             title: 'YouTube Downloader',
             placeholder: 'Paste a YouTube URL here...',
@@ -12,6 +15,14 @@ export default {
             download_complete: 'Download complete!',
             invalid_url: 'Please enter a valid URL.',
             no_folder_warning: 'Please choose an output folder.'
+        },
+        downloadHistory: {
+            title: 'Download History',
+            empty: 'No downloads made.',
+            delete_all: 'Delete all',
+            confirm_delete_all: 'Are you sure you want to delete all ?',
+            confirm_button_label: 'Delete',
+            cancel_button_label: 'Cancel'
         }
     },
     electron: {

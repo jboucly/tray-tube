@@ -7,7 +7,11 @@ export enum VueMessageToApp {
     SELECTED_FOLDER = 'selected-folder',
 
     CHANGE_LANGUAGE = 'change-language',
-    GET_STORE = 'get-store'
+
+    GET_STORE = 'get-store',
+    SET_STORE = 'set-store',
+    REMOVE_STORE = 'remove-store',
+    CLEAR_KEY_STORE = 'clear-key-store'
 }
 
 export type VueMessageTypeValue = `${VueMessageToApp}`;
