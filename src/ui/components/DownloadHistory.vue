@@ -3,29 +3,35 @@ import { format } from 'date-fns';
 import { useTranslation } from 'i18next-vue';
 import { useDialog } from 'naive-ui';
 import { onMounted, ref } from 'vue';
+
 import { YtDownloadHistory } from '../../stores/schemas/ytDownloadHistory.schema';
 
 const dialog = useDialog();
 const { t, i18next } = useTranslation();
-const histories = ref([] as YtDownloadHistory);
-
-defineProps({
-    isHistoryPage: {
-        type: Boolean,
-        default: false
-    }
-});
+const histories = ref<YtDownloadHistory>([]);
+const historiesCount = ref(0);
 
 onMounted(async () => {
-    const history = await window.electronAPI.getStoreValue<YtDownloadHistory>('ytDownloadHistory');
-
-    if (history) {
-        histories.value = history;
-    }
+    await reloadData();
 });
 
 const open = (url: string) => {
     window.electronAPI.openInBrowser(url);
+};
+
+const reloadData = async () => {
+    const history = await window.electronAPI.getStoreValue<YtDownloadHistory>('ytDownloadHistory');
+
+    const data = Array.isArray(history)
+        ? [...history].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        : [];
+    historiesCount.value = data.length;
+
+    if (historiesCount.value > 5 && !props.isHistoryPage) {
+        histories.value = data.slice(0, 5);
+    } else {
+        histories.value = data;
+    }
 };
 
 const confirmDeleteAll = () => {
@@ -40,6 +46,17 @@ const confirmDeleteAll = () => {
         }
     });
 };
+
+defineExpose({
+    reloadData
+});
+
+const props = defineProps({
+    isHistoryPage: {
+        type: Boolean,
+        default: false
+    }
+});
 </script>
 
 <template>
@@ -61,7 +78,7 @@ const confirmDeleteAll = () => {
 
         <template v-else>
             <n-list-item
-                v-for="history in !isHistoryPage ? histories.slice(0, 5) : histories"
+                v-for="history in histories"
                 :key="history.id"
                 style="cursor: pointer"
                 @click="open(history.url)"
@@ -75,13 +92,18 @@ const confirmDeleteAll = () => {
                     <div style="margin-left: 16px">
                         <div style="font-weight: bold">{{ history.title }}</div>
                         <n-tag type="info" size="small" style="margin-top: 4px">
-                            {{ format(history.createdAt, i18next.language === 'en' ? 'yyyy/MM/dd' : 'dd/MM/yyyy') }}
+                            {{
+                                format(
+                                    history.createdAt,
+                                    i18next.language === 'en' ? 'yyyy/MM/dd HH:mm' : 'dd/MM/yyyy HH:mm'
+                                )
+                            }}
                         </n-tag>
                     </div>
                 </div>
             </n-list-item>
             <n-list-item
-                v-if="histories.length > 5 && !isHistoryPage"
+                v-if="historiesCount > 5 && !isHistoryPage"
                 style="text-align: center; background: none; cursor: pointer; padding: 0"
                 @click="$router.push('/download-history')"
             >

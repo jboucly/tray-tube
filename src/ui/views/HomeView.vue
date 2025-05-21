@@ -12,15 +12,17 @@ const url = ref('');
 const percentage = ref(0);
 const format = ref('wav');
 const selectedFolder = ref('');
+const reloadHistoryData = ref<InstanceType<typeof DownloadHistory>>();
 
 onMounted(() => {
-    window.electronAPI.onFromElectron((event) => {
+    window.electronAPI.onFromElectron(async (event) => {
         switch (event.type) {
             case 'download-progress':
                 percentage.value = event.data;
                 break;
             case 'download-progress-end':
                 percentage.value = 0;
+                await reloadHistoryData.value?.reloadData();
                 message.success(t('app.home.download_complete'));
                 break;
             case 'selected-folder':
@@ -126,7 +128,7 @@ watch(percentage, (newValue) => {
     </div>
 
     <div>
-        <DownloadHistory />
+        <DownloadHistory ref="reloadHistoryData" />
     </div>
 </template>
 

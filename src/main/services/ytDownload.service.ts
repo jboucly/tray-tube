@@ -49,15 +49,17 @@ export class YtDownloadService {
             } else throw new Error('Invalid format type');
 
             const metadata = await this.getVideoMetadata(urlVideo);
-            await this.runDownloadProcess(args, outputFolder);
-
-            await Store.insert<YtDownloadHistoryProperty>('ytDownloadHistory', metadata);
+            await this.runDownloadProcess(args, outputFolder, metadata);
         } catch (err) {
             console.error('❌ [YtDownloadService] Error :', err);
         }
     }
 
-    private async runDownloadProcess(args: string[], outputFolder: string): Promise<void> {
+    private async runDownloadProcess(
+        args: string[],
+        outputFolder: string,
+        metadata: YtDownloadHistoryProperty
+    ): Promise<void> {
         await this.checkBinaryExists();
         const focusedWindow = BrowserWindow.getFocusedWindow();
 
@@ -82,9 +84,15 @@ export class YtDownloadService {
                 Logger.error(`🚀 [yt-dlp] stderr : ${data}`);
             });
 
-            ytDlp.on('close', (code) => {
+            ytDlp.stdout.on('data', (data: string) => {
+                Logger.info(`🚀 [yt-dlp] stdout : ${data}`);
+            });
+
+            ytDlp.on('close', async (code) => {
                 if (code === 0) {
                     Logger.info('✅ [yt-dlp] finished successfully');
+
+                    await Store.insert<YtDownloadHistoryProperty>('ytDownloadHistory', metadata);
                     focusedWindow?.webContents.send(AppMessageToVue.MSG_VUE, {
                         type: VueMessageToApp.DOWNLOAD_PROGRESS_END
                     });
