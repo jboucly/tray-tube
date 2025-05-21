@@ -83,7 +83,7 @@ const confirmDeleteAll = () => {
             <n-list-item
                 v-if="histories.length > 5 && !isHistoryPage"
                 style="text-align: center; background: none; cursor: pointer; padding: 0"
-                @click="$router.push('/history')"
+                @click="$router.push('/download-history')"
             >
                 <n-button text type="secondary" style="font-weight: bold; font-size: 1rem; margin: 12px 0">
                     {{ t('app.downloadHistory.see_all') }}

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { renderIcon } from '@/utils/renderIcon.utils';
-import { HomeOutline } from '@vicons/ionicons5';
+import { FileTrayFullOutline, HomeOutline } from '@vicons/ionicons5';
 import { NMenu } from 'naive-ui';
 import { MenuMixedOption } from 'naive-ui/es/menu/src/interface';
 import { ref, watch } from 'vue';
@@ -16,6 +16,11 @@ const menuOptions: MenuMixedOption[] = [
         key: '/',
         label: 'Home',
         icon: renderIcon(HomeOutline)
+    },
+    {
+        key: '/download-history',
+        label: 'Download History',
+        icon: renderIcon(FileTrayFullOutline)
     }
     // {
     //     key: '/settings',
