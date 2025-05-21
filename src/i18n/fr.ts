@@ -16,7 +16,8 @@ export default {
             folder_prefix: 'Dossier de sortie :',
             download_complete: 'Téléchargement terminé !',
             invalid_url: 'Veuillez entrer une URL valide.',
-            no_folder_warning: 'Veuillez choisir un dossier de sortie.'
+            no_folder_warning: 'Veuillez choisir un dossier de sortie.',
+            download_already_exists: 'Le fichier existe déjà, vous avez déjà téléchargé cette vidéo.'
         },
         downloadHistory: {
             title: 'Historique des téléchargements',

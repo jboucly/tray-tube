@@ -8,6 +8,7 @@ import { FileAudio, FileVideo } from '../../common/types/fileFormat.type';
 const { t } = useTranslation();
 const message = useMessage();
 
+let isAlreadyDownloading = false;
 const url = ref('');
 const percentage = ref(0);
 const format = ref('wav');
@@ -23,10 +24,18 @@ onMounted(() => {
             case 'download-progress-end':
                 percentage.value = 0;
                 await reloadHistoryData.value?.reloadData();
-                message.success(t('app.home.download_complete'));
+
+                if (!isAlreadyDownloading) {
+                    message.success(t('app.home.download_complete'));
+                }
+                isAlreadyDownloading = false;
                 break;
             case 'selected-folder':
                 selectedFolder.value = event.data;
+                break;
+            case 'download-already-exists':
+                isAlreadyDownloading = true;
+                message.warning(t('app.home.download_already_exists'));
                 break;
         }
     });
@@ -96,7 +105,7 @@ watch(percentage, (newValue) => {
                 size="large"
             />
 
-            <n-button type="error" block size="large" @click="chooseFolder" class="input">
+            <n-button :disabled="percentage > 0" type="error" block size="large" @click="chooseFolder" class="input">
                 {{ t('app.home.choose_folder') }}
             </n-button>
 

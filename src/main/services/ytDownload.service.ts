@@ -61,7 +61,9 @@ export class YtDownloadService {
         metadata: YtDownloadHistoryProperty
     ): Promise<void> {
         await this.checkBinaryExists();
-        const focusedWindow = BrowserWindow.getFocusedWindow();
+        // Is not possible to have multiple windows. Not get focused window because it can be closed
+        const window = BrowserWindow.getAllWindows()[0];
+        let isAlreadyDownloaded = false;
 
         await new Promise<void>((resolve, reject) => {
             Logger.info('🚀 [yt-dlp] Run download with args :', this.binaries, args);
@@ -77,7 +79,10 @@ export class YtDownloadService {
             });
 
             readline.createInterface({ input: ytDlp.stdout }).on('line', (line) => {
-                this.sendProgressToRenderer(line, focusedWindow);
+                const res = this.sendProgressToRenderer(line, window);
+                if (res.isAlreadyDownloaded) {
+                    isAlreadyDownloaded = true;
+                }
             });
 
             ytDlp.stderr.on('data', (data) => {
@@ -92,8 +97,11 @@ export class YtDownloadService {
                 if (code === 0) {
                     Logger.info('✅ [yt-dlp] finished successfully');
 
-                    await Store.insert<YtDownloadHistoryProperty>('ytDownloadHistory', metadata);
-                    focusedWindow?.webContents.send(AppMessageToVue.MSG_VUE, {
+                    if (!isAlreadyDownloaded) {
+                        await Store.insert<YtDownloadHistoryProperty>('ytDownloadHistory', metadata);
+                    }
+
+                    window?.webContents.send(AppMessageToVue.MSG_VUE, {
                         type: VueMessageToApp.DOWNLOAD_PROGRESS_END
                     });
 
@@ -175,16 +183,33 @@ export class YtDownloadService {
         }
     }
 
-    private sendProgressToRenderer(data: string, focusedWindow: BrowserWindow | null): void {
+    private sendProgressToRenderer(data: string, window: BrowserWindow | null): { isAlreadyDownloaded: boolean } {
+        let valToReturn = { isAlreadyDownloaded: false };
         const match = data.match(/\[download\]\s+(\d{1,3}\.\d+)%/);
+        const matchAlreadyDownloaded = data.includes('has already been downloaded');
 
-        if (focusedWindow && match) {
+        if (window && match) {
             const progress = parseFloat(match[1]);
 
-            focusedWindow.webContents.send(AppMessageToVue.MSG_VUE, {
+            window.webContents.send(AppMessageToVue.MSG_VUE, {
                 type: VueMessageToApp.DOWNLOAD_PROGRESS,
                 data: progress
             });
         }
+
+        if (window && matchAlreadyDownloaded) {
+            valToReturn.isAlreadyDownloaded = true;
+
+            window.webContents.send(AppMessageToVue.MSG_VUE, {
+                type: VueMessageToApp.DOWNLOAD_PROGRESS,
+                data: 100
+            });
+
+            window.webContents.send(AppMessageToVue.MSG_VUE, {
+                type: VueMessageToApp.DOWNLOAD_ALREADY_EXISTS
+            });
+        }
+
+        return valToReturn;
     }
 }

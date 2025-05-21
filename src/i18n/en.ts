@@ -18,7 +18,8 @@ export default {
             folder_prefix: 'Output folder:',
             download_complete: 'Download complete!',
             invalid_url: 'Please enter a valid URL.',
-            no_folder_warning: 'Please choose an output folder.'
+            no_folder_warning: 'Please choose an output folder.',
+            download_already_exists: 'The file already exists, you have already downloaded this video.'
         },
         downloadHistory: {
             title: 'Download History',

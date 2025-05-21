@@ -76,7 +76,7 @@ const props = defineProps({
             </n-list-item>
         </template>
 
-        <template v-else>
+        <template v-else-if="histories.length > 0">
             <n-list-item
                 v-for="history in histories"
                 :key="history.id"
