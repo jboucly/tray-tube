@@ -89,10 +89,6 @@ export class YtDownloadService {
                 Logger.error(`🚀 [yt-dlp] stderr : ${data}`);
             });
 
-            ytDlp.stdout.on('data', (data: string) => {
-                Logger.info(`🚀 [yt-dlp] stdout : ${data}`);
-            });
-
             ytDlp.on('close', async (code) => {
                 if (code === 0) {
                     Logger.info('✅ [yt-dlp] finished successfully');
@@ -129,6 +125,8 @@ export class YtDownloadService {
             const ytDlp = spawn(this.binaries.ytDlpPath, ['-j', urlVideo]);
 
             ytDlp.stdout.on('data', (data) => {
+                Logger.info(`🚀 [yt-dlp] stdout : ${data}`);
+
                 output += data.toString();
             });
 
