@@ -81,7 +81,10 @@ class StoreDb<T> {
         const isArray = type === 'object' && Array.isArray(this.db.data[key]);
 
         if (type === 'string' || type === 'number') {
-            newData = { ...Object.keys(this.db.data).filter((k) => k !== key) } as T[K];
+            const copiedData = { ...this.db.data };
+            delete copiedData[key];
+
+            newData = copiedData as T[K];
         } else if (isObject) {
             newData = {
                 ...this.db.data,
