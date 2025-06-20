@@ -1,5 +1,6 @@
 import { app, dialog } from 'electron';
 import i18next from 'i18next';
+import { Store } from '../../stores/store.client';
 import { AppMessageToVue } from '../enums/AppMessageToVue.enum';
 import { VueMessageToApp } from '../enums/vueMessageToApp.enum';
 import { TrayModel } from '../models/tray.model';
@@ -28,6 +29,9 @@ export class IpcMainController {
             });
 
             if (result.canceled || !result.filePaths[0]) return;
+
+            const store = await Store.clearKey('selectedFolder');
+            store.set('selectedFolder', result.filePaths[0]);
 
             event.reply(AppMessageToVue.MSG_VUE, {
                 type: VueMessageToApp.SELECTED_FOLDER,

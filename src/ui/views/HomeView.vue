@@ -15,7 +15,13 @@ const format = ref('wav');
 const selectedFolder = ref('');
 const reloadHistoryData = ref<InstanceType<typeof DownloadHistory>>();
 
-onMounted(() => {
+onMounted(async () => {
+    const storeSelectedFolder = await window.electronAPI.getStoreValue<string | null>('selectedFolder');
+
+    if (storeSelectedFolder) {
+        selectedFolder.value = storeSelectedFolder;
+    }
+
     window.electronAPI.onFromElectron(async (event) => {
         switch (event.type) {
             case 'download-progress':

@@ -3,5 +3,6 @@ import { Language } from './../../common/enums/language.enum';
 
 export const DefaultValueInDb: StoreData = {
     language: Language.EN,
-    ytDownloadHistory: []
+    ytDownloadHistory: [],
+    selectedFolder: null
 };

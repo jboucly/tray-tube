@@ -105,12 +105,13 @@ class StoreDb<T> {
 
     /**
      * @description Clear a key from the store. All data will be removed from the key.
+     * If the key is not present, it will do nothing.
      */
-    public async clearKey<K extends keyof T>(key: K): Promise<void> {
+    public async clearKey<K extends keyof T>(key: K): Promise<this> {
         await this.db.read();
 
         if (this.db.data?.[key] === undefined) {
-            throw new Error(`Key does not exist in the store`);
+            return this;
         }
 
         const type = typeof this.db.data?.[key];
@@ -126,6 +127,8 @@ class StoreDb<T> {
 
         this.db.data = newData;
         await this.db.write();
+
+        return this;
     }
 
     private initElectronEvents(): void {
