@@ -7,6 +7,7 @@
     "license": "Non-Commercial Public License v1.0",
     "scripts": {
         "dev": "nodemon",
+        "test": "vitest",
         "start:dev": "rimraf dist && pnpm build:main && pnpm cpAssets && electron .",
         "build:main": "tsc",
         "start:vue": "vite",
@@ -19,7 +20,8 @@
         "cpExecutables": "ts-node ./scripts/copyBinaries.ts",
         "prettier": "prettier --write .",
         "prettier:check": "prettier --check .",
-        "release": "release-it"
+        "release": "release-it",
+        "test:ui": "vitest --ui"
     },
     "dependencies": {
         "@vicons/antd": "^0.13.0",
@@ -43,6 +45,7 @@
         "@release-it/conventional-changelog": "^10.0.1",
         "@types/node": "^22.14.1",
         "@vitejs/plugin-vue": "^5.2.1",
+        "@vitest/ui": "^3.2.4",
         "@vue/tsconfig": "^0.7.0",
         "electron": "^35.1.5",
         "electron-builder": "^26.0.12",
@@ -53,6 +56,7 @@
         "ts-node": "^10.9.2",
         "typescript": "~5.7.2",
         "vite": "^6.2.0",
+        "vitest": "^3.2.4",
         "vue-tsc": "^2.2.4"
     },
     "build": {
