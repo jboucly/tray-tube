@@ -1,11 +1,11 @@
 import i18next from 'i18next';
+import { Language } from './../common/enums/language.enum';
 import en from './en';
 import fr from './fr';
 
-export const initI18next = (locale: string) => {
+export const initI18next = () => {
     i18next.init({
-        lng: locale,
-        debug: true,
+        lng: Language.EN,
         resources: {
             en: {
                 translation: en

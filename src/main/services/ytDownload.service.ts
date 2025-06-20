@@ -5,6 +5,8 @@ import i18next from 'i18next';
 import { join, normalize } from 'path';
 import * as readline from 'readline';
 import { FileAudio, FileFormat, FileFormatAudio, FileFormatVideo, FileVideo } from '../../common/types/fileFormat.type';
+import { YtDownloadHistoryProperty } from '../../stores/schemas/ytDownloadHistory.schema';
+import { Store } from '../../stores/store.client';
 import { AppMessageToVue } from '../enums/AppMessageToVue.enum';
 import { VueMessageToApp } from '../enums/vueMessageToApp.enum';
 import { GetBinaries } from '../utils/getBinary.utils';
@@ -46,15 +48,22 @@ export class YtDownloadService {
                 ];
             } else throw new Error('Invalid format type');
 
-            await this.runDownloadProcess(args, outputFolder);
+            const metadata = await this.getVideoMetadata(urlVideo);
+            await this.runDownloadProcess(args, outputFolder, metadata);
         } catch (err) {
             console.error('❌ [YtDownloadService] Error :', err);
         }
     }
 
-    private async runDownloadProcess(args: string[], outputFolder: string): Promise<void> {
+    private async runDownloadProcess(
+        args: string[],
+        outputFolder: string,
+        metadata: YtDownloadHistoryProperty
+    ): Promise<void> {
         await this.checkBinaryExists();
-        const focusedWindow = BrowserWindow.getFocusedWindow();
+        // Is not possible to have multiple windows. Not get focused window because it can be closed
+        const window = BrowserWindow.getAllWindows()[0];
+        let isAlreadyDownloaded = false;
 
         await new Promise<void>((resolve, reject) => {
             Logger.info('🚀 [yt-dlp] Run download with args :', this.binaries, args);
@@ -69,22 +78,26 @@ export class YtDownloadService {
                 reject(err);
             });
 
-            ytDlp.stdout.on('data', (data: string) => {
-                Logger.info(`🚀 [yt-dlp] stdout : ${data}`);
-            });
-
             readline.createInterface({ input: ytDlp.stdout }).on('line', (line) => {
-                this.sendProgressToRenderer(line, focusedWindow);
+                const res = this.sendProgressToRenderer(line, window);
+                if (res.isAlreadyDownloaded) {
+                    isAlreadyDownloaded = true;
+                }
             });
 
             ytDlp.stderr.on('data', (data) => {
                 Logger.error(`🚀 [yt-dlp] stderr : ${data}`);
             });
 
-            ytDlp.on('close', (code) => {
+            ytDlp.on('close', async (code) => {
                 if (code === 0) {
                     Logger.info('✅ [yt-dlp] finished successfully');
-                    focusedWindow?.webContents.send(AppMessageToVue.MSG_VUE, {
+
+                    if (!isAlreadyDownloaded) {
+                        await Store.insert<YtDownloadHistoryProperty>('ytDownloadHistory', metadata);
+                    }
+
+                    window?.webContents.send(AppMessageToVue.MSG_VUE, {
                         type: VueMessageToApp.DOWNLOAD_PROGRESS_END
                     });
 
@@ -99,6 +112,45 @@ export class YtDownloadService {
                 } else {
                     reject(new Error(`yt-dlp terminated with error code : ${code}`));
                 }
+            });
+        });
+    }
+
+    /**
+     * @description Get video metadata using yt-dlp, this is used to get all information about the video
+     */
+    private async getVideoMetadata(urlVideo: string): Promise<YtDownloadHistoryProperty> {
+        return new Promise((resolve, reject) => {
+            let output = '';
+            const ytDlp = spawn(this.binaries.ytDlpPath, ['-j', urlVideo]);
+
+            ytDlp.stdout.on('data', (data) => {
+                Logger.info(`🚀 [yt-dlp] stdout : ${data}`);
+
+                output += data.toString();
+            });
+
+            ytDlp.on('close', () => {
+                try {
+                    const json = JSON.parse(output);
+                    const metadata: YtDownloadHistoryProperty = {
+                        id: json.id,
+                        title: json.title,
+                        url: json.webpage_url,
+                        thumbnail: json.thumbnail,
+                        createdAt: new Date().toISOString()
+                    };
+
+                    Logger.info('🚀 [yt-dlp] Metadata :', metadata);
+                    resolve(metadata);
+                } catch (e) {
+                    reject(e);
+                }
+            });
+
+            ytDlp.on('error', (err) => {
+                Logger.error('❌ Error when spawn for metadata yt-dlp :', err);
+                reject(err);
             });
         });
     }
@@ -129,16 +181,33 @@ export class YtDownloadService {
         }
     }
 
-    private sendProgressToRenderer(data: string, focusedWindow: BrowserWindow | null): void {
+    private sendProgressToRenderer(data: string, window: BrowserWindow | null): { isAlreadyDownloaded: boolean } {
+        let valToReturn = { isAlreadyDownloaded: false };
         const match = data.match(/\[download\]\s+(\d{1,3}\.\d+)%/);
+        const matchAlreadyDownloaded = data.includes('has already been downloaded');
 
-        if (focusedWindow && match) {
+        if (window && match) {
             const progress = parseFloat(match[1]);
 
-            focusedWindow.webContents.send(AppMessageToVue.MSG_VUE, {
+            window.webContents.send(AppMessageToVue.MSG_VUE, {
                 type: VueMessageToApp.DOWNLOAD_PROGRESS,
                 data: progress
             });
         }
+
+        if (window && matchAlreadyDownloaded) {
+            valToReturn.isAlreadyDownloaded = true;
+
+            window.webContents.send(AppMessageToVue.MSG_VUE, {
+                type: VueMessageToApp.DOWNLOAD_PROGRESS,
+                data: 100
+            });
+
+            window.webContents.send(AppMessageToVue.MSG_VUE, {
+                type: VueMessageToApp.DOWNLOAD_ALREADY_EXISTS
+            });
+        }
+
+        return valToReturn;
     }
 }

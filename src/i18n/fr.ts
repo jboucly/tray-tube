@@ -1,7 +1,12 @@
-import { ResourceKey } from 'i18next';
-
 export default {
     app: {
+        modal: {
+            warning: 'Attention'
+        },
+        sidebar: {
+            home: 'Accueil',
+            download_history: 'Historique'
+        },
         home: {
             title: 'Téléchargeur YouTube',
             placeholder: 'Coller une URL YouTube ici...',
@@ -11,7 +16,17 @@ export default {
             folder_prefix: 'Dossier de sortie :',
             download_complete: 'Téléchargement terminé !',
             invalid_url: 'Veuillez entrer une URL valide.',
-            no_folder_warning: 'Veuillez choisir un dossier de sortie.'
+            no_folder_warning: 'Veuillez choisir un dossier de sortie.',
+            download_already_exists: 'Le fichier existe déjà, vous avez déjà téléchargé cette vidéo.'
+        },
+        downloadHistory: {
+            title: 'Historique des téléchargements',
+            empty: 'Aucun téléchargement effectué.',
+            delete_all: 'Tout supprimer',
+            confirm_delete_all: 'Êtes-vous sûr de vouloir tout supprimer ?',
+            confirm_button_label: 'Supprimer',
+            cancel_button_label: 'Annuler',
+            see_all: 'Voir tout'
         }
     },
     electron: {
@@ -25,6 +40,12 @@ export default {
                 title: 'Téléchargement terminé',
                 body: 'Votre vidéo a été téléchargée avec succès !'
             }
+        },
+        tray: {
+            show: 'Ouvrir TrayTube',
+            exit: 'Quitter'
         }
     }
-} as ResourceKey;
+};
+
+export type FrTranslation = typeof import('./fr').default;

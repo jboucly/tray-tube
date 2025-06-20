@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import DownloadHistory from '@/components/DownloadHistory.vue';
 import { useTranslation } from 'i18next-vue';
 import { NButton, NInput, NProgress, NSelect, useMessage } from 'naive-ui';
 import { onMounted, ref, watch } from 'vue';
@@ -7,23 +8,40 @@ import { FileAudio, FileVideo } from '../../common/types/fileFormat.type';
 const { t } = useTranslation();
 const message = useMessage();
 
+let isAlreadyDownloading = false;
 const url = ref('');
 const percentage = ref(0);
 const format = ref('wav');
 const selectedFolder = ref('');
+const reloadHistoryData = ref<InstanceType<typeof DownloadHistory>>();
 
-onMounted(() => {
-    window.electronAPI.onFromElectron((event) => {
+onMounted(async () => {
+    const storeSelectedFolder = await window.electronAPI.getStoreValue<string | null>('selectedFolder');
+
+    if (storeSelectedFolder) {
+        selectedFolder.value = storeSelectedFolder;
+    }
+
+    window.electronAPI.onFromElectron(async (event) => {
         switch (event.type) {
             case 'download-progress':
                 percentage.value = event.data;
                 break;
             case 'download-progress-end':
                 percentage.value = 0;
-                message.success(t('app.home.download_complete'));
+                await reloadHistoryData.value?.reloadData();
+
+                if (!isAlreadyDownloading) {
+                    message.success(t('app.home.download_complete'));
+                }
+                isAlreadyDownloading = false;
                 break;
             case 'selected-folder':
                 selectedFolder.value = event.data;
+                break;
+            case 'download-already-exists':
+                isAlreadyDownloading = true;
+                message.warning(t('app.home.download_already_exists'));
                 break;
         }
     });
@@ -93,7 +111,7 @@ watch(percentage, (newValue) => {
                 size="large"
             />
 
-            <n-button type="error" block size="large" @click="chooseFolder" class="input">
+            <n-button :disabled="percentage > 0" type="error" block size="large" @click="chooseFolder" class="input">
                 {{ t('app.home.choose_folder') }}
             </n-button>
 
@@ -122,6 +140,10 @@ watch(percentage, (newValue) => {
                 {{ t('app.home.download') }}
             </n-button>
         </div>
+    </div>
+
+    <div>
+        <DownloadHistory ref="reloadHistoryData" />
     </div>
 </template>
 

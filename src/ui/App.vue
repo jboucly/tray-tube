@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NMessageProvider } from 'naive-ui';
+import { NDialogProvider, NMessageProvider } from 'naive-ui';
 import Layout from './components/Layout.vue';
 </script>
 
@@ -7,7 +7,9 @@ import Layout from './components/Layout.vue';
     <title>TrayTube</title>
     <n-message-provider>
         <Layout>
-            <router-view />
+            <n-dialog-provider>
+                <router-view />
+            </n-dialog-provider>
         </Layout>
     </n-message-provider>
 </template>

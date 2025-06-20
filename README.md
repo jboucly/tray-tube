@@ -93,6 +93,24 @@ And run the vue app in dev mode
 $ pnpm start:vue
 ```
 
+### Log output
+
+You can see the log output in the terminal where you run the app, or in the dev tools of the app (Ctrl + Shift + I or Cmd + Option + I on Mac).
+
+When you install the app, you can also see the log output in files in the `Logs` folder.
+
+On Mac, the logs are stored in `~/Library/Logs/TrayTube`.
+On Linux, the logs are stored in `~/.config/TrayTube/Logs`.
+On Windows, the logs are stored in `C:\Users\<username>\AppData\Roaming\TrayTube\Logs`.
+
+### Low Database
+
+If you want see the content of the low database, you can see it in the `userData.json` file.
+
+On Linux, the file is stored in `~/.config/yt-tray-app/userData.json`.
+On Windows, the file is stored in `C:\Users\<username>\AppData\Roaming\yt-tray-app\userData.json`.
+On Mac, the file is stored in `/Users/<username>/Library/Application Support/yt-tray-app/userData.json`.
+
 ## How to install the app on your system
 
 This app is not signed (❌💰), so you need to bypass the security of your system to run it.
